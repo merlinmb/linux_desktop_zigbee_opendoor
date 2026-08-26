@@ -12,3 +12,4 @@ src-tauri/target/
 .vscode
 .idea/
 *.iml
+config.toml

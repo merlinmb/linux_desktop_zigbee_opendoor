@@ -1,0 +1,20 @@
+[mqtt]
+broker = "192.168.1.55"
+port = 1883
+client_name = "opendoor_monitor_linux"
+
+[display]
+brightness = 100
+flip_screen = false
+scroll_interval_ms = 1750
+
+[window]
+x = 0
+y = 0
+always_on_top = true
+transparency = 255
+
+[subscriptions]
+"zigbee2mqtt/yourbridgename/your_sensor_topic" = "Front door"
+"zigbee2mqtt/yourbridgename/another_sensor" = "Garage"
+"stat/yourbridgename/lock_status" = "BMW"
