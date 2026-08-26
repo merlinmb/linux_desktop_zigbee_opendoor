@@ -14,7 +14,7 @@ rumqttc = "0.24"
 thiserror = "1"
 uuid = { version = "1", features = ["v4"] }
 tracing = "0.1"
-tracing-subscriber = "0.3"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
 tauri = { version = "1.5", features = ["shell-open"] }
 tauri-plugin-single-instance = { version = "0.0", git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 toml = "0.8"

@@ -16,10 +16,24 @@ use state::AppState;
 
 #[tokio::main]
 async fn main() {
+    #[cfg(debug_assertions)]
+    {
+        tracing_subscriber::fmt()
+            .with_max_level(tracing::Level::DEBUG)
+            .init();
+    }
+
+    #[cfg(not(debug_assertions))]
+    {
+        tracing_subscriber::fmt()
+            .with_max_level(tracing::Level::INFO)
+            .init();
+    }
+
     tauri::Builder::default()
         .manage(Arc::new(RwLock::new(AppState::default())))
         .setup(|app| {
-            let app_handle = app.app_handle();
+            let _app_handle = app.app_handle();
 
             #[cfg(target_os = "linux")]
             {
@@ -32,6 +46,8 @@ async fn main() {
             if let Err(e) = config::init_config_dir() {
                 eprintln!("Failed to initialize config directory: {}", e);
             }
+
+            tracing::info!("Application started");
 
             Ok(())
         })

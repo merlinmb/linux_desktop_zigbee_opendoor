@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use crate::mqtt::MqttManager;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ContactStatus {
@@ -18,10 +19,10 @@ pub struct MqttStatus {
     pub client_name: String,
 }
 
-#[derive(Debug, Clone)]
 pub struct AppState {
     pub contacts: HashMap<String, ContactStatus>,
     pub mqtt_status: MqttStatus,
+    pub mqtt_manager: Option<MqttManager>,
     pub config_loaded: bool,
 }
 
@@ -34,6 +35,7 @@ impl Default for AppState {
                 broker: String::new(),
                 client_name: String::new(),
             },
+            mqtt_manager: None,
             config_loaded: false,
         }
     }
