@@ -1,0 +1,57 @@
+{
+  "productName": "Open Door Monitor",
+  "version": "1.0.0",
+  "identifier": "com.merlin.opendoor-monitor",
+  "build": {
+    "beforeDev": [],
+    "beforeBuild": [],
+    "devPath": "http://localhost:5173",
+    "frontendDist": "../dist",
+    "features": []
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "dock",
+        "title": "Open Door Monitor",
+        "width": 400,
+        "height": 128,
+        "x": 0,
+        "y": 0,
+        "resizable": false,
+        "fullscreen": false,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "minWidth": 400,
+        "minHeight": 128,
+        "maxWidth": 400,
+        "maxHeight": 128,
+        "focus": true,
+        "visible": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "appimage",
+      "deb"
+    ],
+    "appimage": {
+      "bundleMediaFramework": false
+    },
+    "deb": {
+      "depends": []
+    },
+    "linux": {
+      "rpm": {
+        "depends": []
+      }
+    }
+  }
+}

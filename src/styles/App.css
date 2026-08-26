@@ -1,0 +1,361 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #13161c;
+  --surface: #1b2026;
+  --text: #e8eaed;
+  --accent: #4fb3ff;
+  --ok: #2ecc71;
+  --bad: #e74c3c;
+  --dim: #6c757d;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg);
+  padding: 0;
+}
+
+.app.loading {
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: var(--dim);
+}
+
+/* Status Bar */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--surface);
+  font-size: 11px;
+  background-color: rgba(27, 32, 38, 0.95);
+}
+
+.status-left,
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mqtt-indicator {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--bad);
+}
+
+.mqtt-indicator.connected {
+  background-color: var(--ok);
+}
+
+.broker-name {
+  color: var(--dim);
+  font-size: 10px;
+}
+
+.time {
+  color: var(--dim);
+  font-size: 10px;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--bg);
+}
+
+/* RoboEyes */
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+/* Contacts List */
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  gap: 4px;
+}
+
+.contacts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--accent);
+  padding: 0 4px;
+}
+
+.open-count {
+  background-color: var(--bad);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.contacts-items {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+}
+
+.contact-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  padding: 0 8px;
+}
+
+.contact-name {
+  font-weight: bold;
+  font-size: 13px;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.last-seen {
+  font-size: 10px;
+  color: var(--dim);
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 24px;
+  padding: 0 4px;
+  border-top: 1px solid var(--surface);
+  background-color: rgba(27, 32, 38, 0.95);
+  gap: 4px;
+}
+
+.btn-settings {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 2px;
+  transition: background-color 0.2s;
+}
+
+.btn-settings:hover {
+  background-color: var(--surface);
+}
+
+/* Settings Modal */
+.settings-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.settings-modal {
+  background-color: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 20px;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.settings-modal h2 {
+  color: var(--accent);
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.settings-section {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-section h3 {
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.settings-section input[type='text'],
+.settings-section input[type='number'],
+.settings-section input[type='range'],
+.settings-section label {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 6px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.settings-section input[type='checkbox'] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.settings-section label {
+  display: flex;
+  align-items: center;
+}
+
+.add-topic {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.add-topic input {
+  flex: 1;
+}
+
+.add-topic button {
+  padding: 6px 12px;
+  background-color: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.add-topic button:hover {
+  opacity: 0.8;
+}
+
+.topics-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.topic-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  font-size: 11px;
+  gap: 8px;
+}
+
+.topic-item span:first-child {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.topic-item .topic {
+  color: var(--dim);
+  flex: 1;
+  text-align: right;
+  font-size: 9px;
+}
+
+.topic-item button {
+  background-color: var(--bad);
+  color: white;
+  border: none;
+  border-radius: 2px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.topic-item button:hover {
+  opacity: 0.8;
+}
+
+.settings-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.btn-save,
+.btn-cancel {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.btn-save {
+  background-color: var(--ok);
+  color: white;
+}
+
+.btn-save:hover {
+  opacity: 0.8;
+}
+
+.btn-cancel {
+  background-color: var(--dim);
+  color: white;
+}
+
+.btn-cancel:hover {
+  opacity: 0.8;
+}

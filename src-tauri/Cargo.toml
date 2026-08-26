@@ -1,0 +1,26 @@
+[package]
+name = "opendoor-monitor"
+version = "1.0.0"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = "1.5"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+rumqttc = "0.24"
+thiserror = "1"
+uuid = { version = "1", features = ["v4"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+tauri = { version = "1.5", features = ["shell-open"] }
+tauri-plugin-single-instance = { version = "0.0", git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
+toml = "0.8"
+directories = "5.0"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
