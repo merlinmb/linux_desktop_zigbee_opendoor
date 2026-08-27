@@ -17,6 +17,9 @@ export interface DisplayConfig {
   brightness: number
   flip_screen: boolean
   scroll_interval_ms: number
+  clock_font_size: number
+  contact_name_font_size: number
+  highlight_duration_ms: number
 }
 
 export interface WindowConfig {

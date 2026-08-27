@@ -4,14 +4,43 @@ import { ContactStatus } from '../lib/types'
 interface ContactsListProps {
   contacts: ContactStatus[]
   scrollInterval: number
+  contactNameFontSize?: number
+  highlightDurationMs?: number
 }
 
-export const ContactsList: React.FC<ContactsListProps> = ({ contacts, scrollInterval }) => {
+export const ContactsList: React.FC<ContactsListProps> = ({
+  contacts,
+  scrollInterval,
+  contactNameFontSize = 24,
+  highlightDurationMs = 3000
+}) => {
   const [scrollOffset, setScrollOffset] = useState(0)
   const [lastScroll, setLastScroll] = useState(Date.now())
+  const [highlightedTopic, setHighlightedTopic] = useState<string | null>(null)
+  const [previousContactCount, setPreviousContactCount] = useState(contacts.length)
 
+  // Detect newly opened doors and highlight them
   useEffect(() => {
-    if (contacts.length === 0) return
+    if (contacts.length > previousContactCount) {
+      // A new door opened - highlight the first newly opened one (should be the most recent)
+      const newTopic = contacts[0]?.topic
+      if (newTopic) {
+        setHighlightedTopic(newTopic)
+        setScrollOffset(0) // Jump to the newly opened door
+
+        const timeout = setTimeout(() => {
+          setHighlightedTopic(null)
+        }, highlightDurationMs)
+
+        return () => clearInterval(timeout)
+      }
+    }
+    setPreviousContactCount(contacts.length)
+  }, [contacts.length, previousContactCount, highlightDurationMs])
+
+  // Auto-scroll through contacts (but not while a door is highlighted)
+  useEffect(() => {
+    if (contacts.length === 0 || highlightedTopic !== null) return
 
     const interval = setInterval(() => {
       const now = Date.now()
@@ -22,10 +51,11 @@ export const ContactsList: React.FC<ContactsListProps> = ({ contacts, scrollInte
     }, 100)
 
     return () => clearInterval(interval)
-  }, [contacts, scrollInterval, lastScroll])
+  }, [contacts, scrollInterval, lastScroll, highlightedTopic])
 
   const openCount = contacts.length
   const current = contacts.length > 0 ? contacts[scrollOffset % contacts.length] : null
+  const isHighlighted = highlightedTopic && current?.topic === highlightedTopic
 
   return (
     <div className="contacts-list">
@@ -35,8 +65,10 @@ export const ContactsList: React.FC<ContactsListProps> = ({ contacts, scrollInte
 
       <div className="contacts-items">
         {current && (
-          <div className="contact-item">
-            <span className="contact-name">{current.friendly_name}</span>
+          <div className={`contact-item ${isHighlighted ? 'highlighted' : ''}`}>
+            <span className="contact-name" style={{ fontSize: `${contactNameFontSize}px` }}>
+              {current.friendly_name}
+            </span>
             <span className="last-seen">
               {current.last_seen ? new Date(current.last_seen).toLocaleTimeString() : 'N/A'}
             </span>

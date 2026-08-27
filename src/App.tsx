@@ -100,9 +100,11 @@ function App() {
           <ContactsList
             contacts={contacts.filter((c) => !c.contact)}
             scrollInterval={config.display.scroll_interval_ms}
+            contactNameFontSize={config.display.contact_name_font_size}
+            highlightDurationMs={config.display.highlight_duration_ms}
           />
         ) : (
-          <Clock />
+          <Clock fontSize={config.display.clock_font_size} />
         )}
       </div>
 

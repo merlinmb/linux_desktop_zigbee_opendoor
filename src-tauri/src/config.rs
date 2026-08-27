@@ -25,6 +25,24 @@ pub struct DisplayConfig {
     pub brightness: u8,
     pub flip_screen: bool,
     pub scroll_interval_ms: u32,
+    #[serde(default = "default_clock_font_size")]
+    pub clock_font_size: u16,
+    #[serde(default = "default_contact_name_font_size")]
+    pub contact_name_font_size: u16,
+    #[serde(default = "default_highlight_duration_ms")]
+    pub highlight_duration_ms: u32,
+}
+
+fn default_clock_font_size() -> u16 {
+    156
+}
+
+fn default_contact_name_font_size() -> u16 {
+    24
+}
+
+fn default_highlight_duration_ms() -> u32 {
+    3000
 }
 
 impl Default for DisplayConfig {
@@ -33,6 +51,9 @@ impl Default for DisplayConfig {
             brightness: 100,
             flip_screen: false,
             scroll_interval_ms: 1750,
+            clock_font_size: 156,
+            contact_name_font_size: 24,
+            highlight_duration_ms: 3000,
         }
     }
 }

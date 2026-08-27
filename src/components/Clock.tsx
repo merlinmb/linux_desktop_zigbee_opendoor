@@ -6,7 +6,11 @@ function formatTime(date: Date): string {
   return `${hours}:${minutes}`
 }
 
-export const Clock: React.FC = () => {
+interface ClockProps {
+  fontSize?: number
+}
+
+export const Clock: React.FC<ClockProps> = ({ fontSize = 156 }) => {
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {
@@ -15,7 +19,7 @@ export const Clock: React.FC = () => {
   }, [])
 
   return (
-    <div className="clock" data-tauri-drag-region>
+    <div className="clock" data-tauri-drag-region style={{ fontSize: `${fontSize}px` }}>
       {formatTime(now)}
     </div>
   )

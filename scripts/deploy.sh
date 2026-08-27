@@ -3,13 +3,16 @@
 # SSH and install it there.
 #
 # Usage:
-#   scripts/deploy.sh user@host [--appimage] [--config]
+#   scripts/deploy.sh user@host [--appimage] [--config] [--copy-local-config]
 #
-#   --appimage   Deploy the .AppImage instead of the .deb (default: .deb,
-#                since it declares its own runtime dependencies via apt).
-#   --config     Also copy config.toml.example to the target's
-#                ~/.config/opendoor-monitor/config.toml, but only if that
-#                file doesn't already exist there (never overwrites).
+#   --appimage           Deploy the .AppImage instead of the .deb (default: .deb,
+#                        since it declares its own runtime dependencies via apt).
+#   --config             Also copy config.toml.example to the target's
+#                        ~/.config/opendoor-monitor/config.toml, but only if that
+#                        file doesn't already exist there (never overwrites).
+#   --copy-local-config  Copy the local config.toml to the target's
+#                        ~/.config/opendoor-monitor/config.toml, overwriting any
+#                        existing config there.
 #
 # Assumes the target machine is the same CPU architecture, and (for the .deb)
 # a Debian/Ubuntu-based distro with apt.
@@ -20,17 +23,19 @@ RELEASE_DIR="$ROOT_DIR/release"
 
 TARGET="${1:-}"
 if [[ -z "$TARGET" ]]; then
-  echo "Usage: $0 user@host [--appimage] [--config]" >&2
+  echo "Usage: $0 user@host [--appimage] [--config] [--copy-local-config]" >&2
   exit 1
 fi
 shift
 
 USE_APPIMAGE=false
 PUSH_CONFIG=false
+PUSH_LOCAL_CONFIG=false
 for arg in "$@"; do
   case "$arg" in
     --appimage) USE_APPIMAGE=true ;;
     --config) PUSH_CONFIG=true ;;
+    --copy-local-config) PUSH_LOCAL_CONFIG=true ;;
     *) echo "Unknown option: $arg" >&2; exit 1 ;;
   esac
 done
@@ -64,7 +69,17 @@ else
   LAUNCH_HINT="opendoor-monitor (or from the applications menu)"
 fi
 
-if $PUSH_CONFIG; then
+if $PUSH_LOCAL_CONFIG; then
+  echo "==> Copying local config.toml to remote (overwriting)"
+  scp "$ROOT_DIR/config.toml" "$TARGET:/tmp/config.toml"
+  ssh "$TARGET" '
+    set -e
+    mkdir -p ~/.config/opendoor-monitor
+    cp /tmp/config.toml ~/.config/opendoor-monitor/config.toml
+    echo "    installed config.toml"
+    rm -f /tmp/config.toml
+  '
+elif $PUSH_CONFIG; then
   echo "==> Copying config.toml.example (only if remote has no config yet)"
   scp "$ROOT_DIR/config.toml.example" "$TARGET:/tmp/config.toml.example"
   ssh "$TARGET" '

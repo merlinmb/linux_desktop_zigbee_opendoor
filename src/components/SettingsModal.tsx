@@ -100,6 +100,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ config, onSave, on
             {localConfig.display.brightness}
           </label>
           <label>
+            Clock Font Size (px):
+            <input
+              type="range"
+              min="12"
+              max="300"
+              value={localConfig.display.clock_font_size}
+              onChange={(e) =>
+                setLocalConfig({
+                  ...localConfig,
+                  display: { ...localConfig.display, clock_font_size: parseInt(e.target.value) },
+                })
+              }
+            />
+            {localConfig.display.clock_font_size}
+          </label>
+          <label>
+            Contact Name Font Size (px):
+            <input
+              type="range"
+              min="8"
+              max="100"
+              value={localConfig.display.contact_name_font_size}
+              onChange={(e) =>
+                setLocalConfig({
+                  ...localConfig,
+                  display: { ...localConfig.display, contact_name_font_size: parseInt(e.target.value) },
+                })
+              }
+            />
+            {localConfig.display.contact_name_font_size}
+          </label>
+          <label>
             Scroll Interval (ms):
             <input
               type="number"
@@ -111,6 +143,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ config, onSave, on
                 })
               }
             />
+          </label>
+          <label>
+            Highlight Duration (ms):
+            <input
+              type="range"
+              min="500"
+              max="10000"
+              step="100"
+              value={localConfig.display.highlight_duration_ms}
+              onChange={(e) =>
+                setLocalConfig({
+                  ...localConfig,
+                  display: { ...localConfig.display, highlight_duration_ms: parseInt(e.target.value) },
+                })
+              }
+            />
+            {localConfig.display.highlight_duration_ms}
           </label>
           <label>
             <input
