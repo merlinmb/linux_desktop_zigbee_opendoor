@@ -2,9 +2,16 @@
 name = "opendoor-monitor"
 version = "1.0.0"
 edition = "2021"
+authors = ["merlinmb <markbeets@gmail.com>"]
 
 [build-dependencies]
-tauri-build = "1.5"
+tauri-build = { version = "1.5", features = [] }
+
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
+default = ["custom-protocol"]
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
@@ -15,7 +22,7 @@ thiserror = "1"
 uuid = { version = "1", features = ["v4"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
-tauri = { version = "1.5", features = ["shell-open"] }
+tauri = { version = "1.5", features = ["window-start-dragging"] }
 tauri-plugin-single-instance = { version = "0.0", git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 toml = "0.8"
 directories = "5.0"

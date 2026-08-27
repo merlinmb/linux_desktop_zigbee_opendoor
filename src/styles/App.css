@@ -67,7 +67,7 @@ body {
   padding: 0 8px;
   border-bottom: 1px solid var(--surface);
   font-size: 11px;
-  background-color: rgba(27, 32, 38, 0.95);
+  background-color: var(--surface);
 }
 
 .status-left,
@@ -109,12 +109,14 @@ body {
   background-color: var(--bg);
 }
 
-/* RoboEyes */
-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  image-rendering: pixelated;
+/* Clock */
+.clock {
+  font-size: 156px;
+  line-height: 1;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+  color: var(--text);
 }
 
 /* Contacts List */
@@ -164,7 +166,7 @@ canvas {
 
 .contact-name {
   font-weight: bold;
-  font-size: 13px;
+  font-size: 24px;
   color: var(--text);
   word-break: break-word;
 }
@@ -182,7 +184,7 @@ canvas {
   height: 24px;
   padding: 0 4px;
   border-top: 1px solid var(--surface);
-  background-color: rgba(27, 32, 38, 0.95);
+  background-color: var(--surface);
   gap: 4px;
 }
 

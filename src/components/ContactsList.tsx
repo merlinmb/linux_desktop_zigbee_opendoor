@@ -25,6 +25,7 @@ export const ContactsList: React.FC<ContactsListProps> = ({ contacts, scrollInte
   }, [contacts, scrollInterval, lastScroll])
 
   const openCount = contacts.length
+  const current = contacts.length > 0 ? contacts[scrollOffset % contacts.length] : null
 
   return (
     <div className="contacts-list">
@@ -33,13 +34,11 @@ export const ContactsList: React.FC<ContactsListProps> = ({ contacts, scrollInte
       </div>
 
       <div className="contacts-items">
-        {contacts.length > 0 && (
+        {current && (
           <div className="contact-item">
-            <span className="contact-name">{contacts[scrollOffset].friendly_name}</span>
+            <span className="contact-name">{current.friendly_name}</span>
             <span className="last-seen">
-              {contacts[scrollOffset].last_seen
-                ? new Date(contacts[scrollOffset].last_seen!).toLocaleTimeString()
-                : 'N/A'}
+              {current.last_seen ? new Date(current.last_seen).toLocaleTimeString() : 'N/A'}
             </span>
           </div>
         )}

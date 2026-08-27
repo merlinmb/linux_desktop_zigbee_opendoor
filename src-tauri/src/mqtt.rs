@@ -19,6 +19,7 @@ impl MqttManager {
         broker: String,
         port: u16,
         client_name: String,
+        state: Arc<RwLock<AppState>>,
     ) -> Result<AsyncClient, Box<dyn std::error::Error>> {
         let mut options = MqttOptions::new(client_name, broker, port);
         options.set_keep_alive(Duration::from_secs(30));
@@ -36,6 +37,26 @@ impl MqttManager {
                         match notification {
                             Event::Incoming(Packet::Publish(pub_pkt)) => {
                                 tracing::debug!("MQTT message: {}", pub_pkt.topic);
+                                match parse_contact_message(&pub_pkt.payload) {
+                                    Ok(mut status) => {
+                                        let mut app_state = state.write().await;
+                                        let friendly_name = app_state
+                                            .contacts
+                                            .get(&pub_pkt.topic)
+                                            .map(|c| c.friendly_name.clone())
+                                            .unwrap_or_else(|| pub_pkt.topic.clone());
+                                        status.topic = pub_pkt.topic.clone();
+                                        status.friendly_name = friendly_name;
+                                        app_state.contacts.insert(pub_pkt.topic.clone(), status);
+                                    }
+                                    Err(e) => {
+                                        tracing::warn!(
+                                            "Failed to parse MQTT payload on {}: {}",
+                                            pub_pkt.topic,
+                                            e
+                                        );
+                                    }
+                                }
                             }
                             Event::Incoming(Packet::ConnAck(_)) => {
                                 tracing::info!("MQTT connected");
@@ -83,7 +104,9 @@ impl MqttManager {
     }
 }
 
-pub fn parse_contact_message(payload: &[u8]) -> Result<ContactStatus, Box<dyn std::error::Error>> {
+pub fn parse_contact_message(
+    payload: &[u8],
+) -> Result<ContactStatus, Box<dyn std::error::Error + Send + Sync>> {
     let text = String::from_utf8(payload.to_vec())?;
     let json: Value = serde_json::from_str(&text)?;
 

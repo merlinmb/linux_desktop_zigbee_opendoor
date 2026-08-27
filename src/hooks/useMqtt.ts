@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { mqttConnect, mqttDisconnect } from '../lib/api'
 
 export function useMqtt(broker: string, port: number, clientName: string) {

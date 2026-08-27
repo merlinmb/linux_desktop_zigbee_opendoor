@@ -14,13 +14,20 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mqttConnected, broker }) =
   }, [])
 
   return (
-    <div className="status-bar">
-      <div className="status-left">
-        <span className={`mqtt-indicator ${mqttConnected ? 'connected' : 'disconnected'}`} />
-        <span className="broker-name">{broker}</span>
+    <div className="status-bar" data-tauri-drag-region>
+      <div className="status-left" data-tauri-drag-region>
+        <span
+          className={`mqtt-indicator ${mqttConnected ? 'connected' : 'disconnected'}`}
+          data-tauri-drag-region
+        />
+        <span className="broker-name" data-tauri-drag-region>
+          {broker}
+        </span>
       </div>
-      <div className="status-right">
-        <span className="time">{time.toLocaleTimeString()}</span>
+      <div className="status-right" data-tauri-drag-region>
+        <span className="time" data-tauri-drag-region>
+          {time.toLocaleTimeString()}
+        </span>
       </div>
     </div>
   )

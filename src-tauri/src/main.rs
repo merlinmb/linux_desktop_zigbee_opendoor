@@ -9,8 +9,9 @@ mod state;
 mod commands;
 mod window;
 
-use tauri::{generate_handler, App, Manager};
-use std::sync::Arc;
+use tauri::{generate_handler, Manager};
+use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
 use state::AppState;
 
@@ -37,7 +38,7 @@ async fn main() {
 
             #[cfg(target_os = "linux")]
             {
-                if let Ok(main_window) = app.get_window("dock") {
+                if let Some(main_window) = app.get_window("dock") {
                     let _ = window::set_x11_hints(&main_window);
                 }
             }
@@ -45,6 +46,42 @@ async fn main() {
             // Initialize config on startup
             if let Err(e) = config::init_config_dir() {
                 eprintln!("Failed to initialize config directory: {}", e);
+            }
+
+            // Restore saved window position/always-on-top, and persist new
+            // positions as the user drags the (decoration-less) window.
+            match config::load_config() {
+                Ok(cfg) => {
+                    if let Some(main_window) = app.get_window("dock") {
+                        let _ = main_window.set_position(tauri::Position::Physical(
+                            tauri::PhysicalPosition {
+                                x: cfg.window.x,
+                                y: cfg.window.y,
+                            },
+                        ));
+                        let _ = main_window.set_always_on_top(cfg.window.always_on_top);
+
+                        let last_saved = Arc::new(Mutex::new(Instant::now()));
+                        main_window.clone().on_window_event(move |event| {
+                            if let tauri::WindowEvent::Moved(position) = event {
+                                let mut last = last_saved.lock().unwrap();
+                                if last.elapsed() < Duration::from_millis(300) {
+                                    return;
+                                }
+                                *last = Instant::now();
+
+                                if let Ok(mut cfg) = config::load_config() {
+                                    cfg.window.x = position.x;
+                                    cfg.window.y = position.y;
+                                    if let Err(e) = config::save_config(&cfg) {
+                                        eprintln!("Failed to save window position: {}", e);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+                Err(e) => eprintln!("Failed to load config for window setup: {}", e),
             }
 
             tracing::info!("Application started");

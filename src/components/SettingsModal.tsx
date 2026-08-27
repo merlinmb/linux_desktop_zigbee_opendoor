@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { AppConfig } from '../lib/types'
-import * as api from '../lib/api'
 
 interface SettingsModalProps {
   config: AppConfig
-  onSave: (config: AppConfig) => void
+  onSave: (config: AppConfig) => Promise<void>
   onClose: () => void
 }
 
@@ -14,8 +13,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ config, onSave, on
   const [newFriendly, setNewFriendly] = useState('')
 
   const handleSave = async () => {
-    await api.configSave(localConfig)
-    onSave(localConfig)
+    await onSave(localConfig)
     onClose()
   }
 

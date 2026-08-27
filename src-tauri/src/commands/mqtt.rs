@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use crate::state::AppState;
+use crate::state::{AppState, ContactStatus};
 use crate::mqtt::MqttManager;
 
 #[tauri::command]
@@ -10,10 +10,11 @@ pub async fn mqtt_connect(
     client_name: String,
     state: tauri::State<'_, Arc<RwLock<AppState>>>,
 ) -> Result<String, String> {
+    let state_handle = state.inner().clone();
     let mut app_state = state.write().await;
 
     let mut manager = MqttManager::new();
-    match manager.connect(broker.clone(), port, client_name.clone()).await {
+    match manager.connect(broker.clone(), port, client_name.clone(), state_handle).await {
         Ok(_client) => {
             app_state.mqtt_status.broker = broker.clone();
             app_state.mqtt_status.client_name = client_name.clone();
@@ -56,21 +57,25 @@ pub async fn mqtt_subscribe(
 ) -> Result<(), String> {
     let mut app_state = state.write().await;
 
-    if let Some(manager) = &app_state.mqtt_manager {
-        // Note: subscribe is not async here, but should be in a real implementation
-        // For now, we store the subscription intent and let the connection handle it
-        app_state.contacts.insert(
-            topic.clone(),
-            crate::state::ContactStatus {
-                topic,
-                friendly_name,
+    if let Some(manager) = &mut app_state.mqtt_manager {
+        manager
+            .subscribe(topic.clone())
+            .await
+            .map_err(|e| format!("Failed to subscribe: {}", e))?;
+
+        tracing::info!("Subscribed to: {} ({})", topic, friendly_name);
+        let entry = app_state
+            .contacts
+            .entry(topic.clone())
+            .or_insert_with(|| ContactStatus {
+                topic: topic.clone(),
+                friendly_name: friendly_name.clone(),
                 contact: true,
                 last_seen: None,
                 battery: None,
                 payload: String::new(),
-            },
-        );
-        tracing::info!("Added subscription for: {}", friendly_name);
+            });
+        entry.friendly_name = friendly_name;
         Ok(())
     } else {
         Err("MQTT not connected".to_string())
@@ -83,6 +88,13 @@ pub async fn mqtt_unsubscribe(
     state: tauri::State<'_, Arc<RwLock<AppState>>>,
 ) -> Result<(), String> {
     let mut app_state = state.write().await;
+
+    if let Some(manager) = &mut app_state.mqtt_manager {
+        manager
+            .unsubscribe(topic.clone())
+            .await
+            .map_err(|e| format!("Failed to unsubscribe: {}", e))?;
+    }
 
     if app_state.contacts.remove(&topic).is_some() {
         tracing::info!("Removed subscription for: {}", topic);

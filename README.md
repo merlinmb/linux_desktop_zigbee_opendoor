@@ -193,6 +193,30 @@ npm run tauri:build
 npm run tauri:build -- --target deb
 ```
 
+### Package and install on another machine
+
+To build a `.deb`/`.AppImage` and ship it to another Linux box on the same
+network (same CPU architecture; the target machine doesn't need Node, Rust,
+or any build tools):
+
+```bash
+# 1. Build and stage the installers in release/
+npm run package
+
+# 2. Copy to the target machine over SSH and install it there
+npm run deploy -- user@target-host
+# or, to also seed a default config.toml on a machine that has none yet:
+npm run deploy -- user@target-host --config
+# to deploy the AppImage instead of the .deb:
+npm run deploy -- user@target-host --appimage
+```
+
+`deploy.sh` installs the `.deb` with `sudo apt install`, which pulls in the
+declared runtime dependencies (webkit2gtk, GTK3) automatically. `--config`
+never overwrites an existing `~/.config/opendoor-monitor/config.toml` on the
+target — you'll still need to edit it there with that machine's MQTT broker
+and topics.
+
 ### Release to GitHub
 ```bash
 git tag v1.0.0

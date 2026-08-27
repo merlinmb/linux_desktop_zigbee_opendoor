@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "package": "bash scripts/package.sh",
+    "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.3",
