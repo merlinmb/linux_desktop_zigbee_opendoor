@@ -51,11 +51,6 @@ impl MqttManager {
         let (client, connection) = AsyncClient::new(options, 10);
         self.client = Some(client.clone());
 
-        let subscribed_topics = self.subscribed_topics.clone();
-        let broker_clone = self.broker.clone();
-        let port_clone = self.port;
-        let client_name_clone = self.client_name.clone();
-
         // Spawn connection event loop in background
         tokio::spawn(async move {
             let mut connection = connection;

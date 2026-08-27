@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react'
 interface StatusBarProps {
   mqttConnected: boolean
   broker: string
+  onOpenSettings: () => void
 }
 
-export const StatusBar: React.FC<StatusBarProps> = ({ mqttConnected, broker }) => {
+export const StatusBar: React.FC<StatusBarProps> = ({ mqttConnected, broker, onOpenSettings }) => {
   const [time, setTime] = useState(new Date())
 
   useEffect(() => {
@@ -23,11 +24,14 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mqttConnected, broker }) =
         <span className="broker-name" data-tauri-drag-region>
           {broker}
         </span>
-      </div>
-      <div className="status-right" data-tauri-drag-region>
         <span className="time" data-tauri-drag-region>
           {time.toLocaleTimeString()}
         </span>
+      </div>
+      <div className="status-right">
+        <button className="btn-settings" onClick={onOpenSettings} title="Settings (Ctrl+,)">
+          ⚙️
+        </button>
       </div>
     </div>
   )

@@ -150,27 +150,33 @@ body {
 
 .contacts-items {
   flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 30px;
+  overflow: hidden;
 }
 
 .contact-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   text-align: center;
-  padding: 0 8px;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  /* Reserve the highlight border's space up front (transparent when idle) so
+     turning it red on highlight never changes box size and can't get clipped
+     by the parent's overflow. */
+  border: 4px solid transparent;
+  border-radius: 4px;
 }
 
 .contact-item.highlighted {
   animation: highlight-fade var(--highlight-duration, 3s) ease-out;
-  border: 4px solid #e74c3c;
-  border-radius: 4px;
-  padding: 8px;
-  margin: -12px;
+  border-color: #e74c3c;
 }
 
 @keyframes highlight-fade {
@@ -186,6 +192,11 @@ body {
 }
 
 .contact-name {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: bold;
   font-size: 24px;
   color: var(--text);
@@ -193,20 +204,9 @@ body {
 }
 
 .last-seen {
+  flex: none;
   font-size: 10px;
   color: var(--dim);
-}
-
-/* Toolbar */
-.toolbar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 24px;
-  padding: 0 4px;
-  border-top: 1px solid var(--surface);
-  background-color: var(--surface);
-  gap: 4px;
 }
 
 .btn-settings {
@@ -214,8 +214,9 @@ body {
   border: none;
   color: var(--accent);
   cursor: pointer;
-  font-size: 14px;
-  padding: 4px;
+  font-size: 11px;
+  line-height: 1;
+  padding: 2px 4px;
   border-radius: 2px;
   transition: background-color 0.2s;
 }

@@ -142,7 +142,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ config, onSave, on
             <input
               type="range"
               min="8"
-              max="100"
+              max="200"
               value={localConfig.display.contact_name_font_size}
               onChange={(e) =>
                 setLocalConfig({

@@ -17,7 +17,9 @@ export const ContactsList: React.FC<ContactsListProps> = ({
   const [scrollOffset, setScrollOffset] = useState(0)
   const [lastScroll, setLastScroll] = useState(Date.now())
   const [highlightedTopic, setHighlightedTopic] = useState<string | null>(null)
-  const [previousContactCount, setPreviousContactCount] = useState(contacts.length)
+  // Start at 0 (not contacts.length) so the door that causes this list to first
+  // mount (Clock -> ContactsList, i.e. 0 open -> 1 open) is still detected as new.
+  const [previousContactCount, setPreviousContactCount] = useState(0)
 
   // Detect newly opened doors and highlight them
   useEffect(() => {
@@ -27,15 +29,17 @@ export const ContactsList: React.FC<ContactsListProps> = ({
       if (newTopic) {
         setHighlightedTopic(newTopic)
         setScrollOffset(0) // Jump to the newly opened door
+        setPreviousContactCount(contacts.length)
 
         const timeout = setTimeout(() => {
           setHighlightedTopic(null)
         }, highlightDurationMs)
 
-        return () => clearInterval(timeout)
+        return () => clearTimeout(timeout)
       }
     }
     setPreviousContactCount(contacts.length)
+    return undefined
   }, [contacts.length, previousContactCount, highlightDurationMs])
 
   // Auto-scroll through contacts (but not while a door is highlighted)

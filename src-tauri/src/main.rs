@@ -88,6 +88,29 @@ async fn main() {
 
             Ok(())
         })
+        .on_window_event(|global_window_event| {
+            if let tauri::WindowEvent::CloseRequested { api, .. } = global_window_event.event() {
+                let app = global_window_event.window().app_handle();
+                let state = app.state::<Arc<RwLock<AppState>>>();
+
+                let state_handle = state.inner().clone();
+                tokio::spawn(async move {
+                    let mut app_state = state_handle.write().await;
+                    if let Some(mut manager) = app_state.mqtt_manager.take() {
+                        let _ = manager.disconnect().await;
+                        tracing::info!("MQTT disconnected on app close");
+                    }
+                });
+
+                api.prevent_close();
+
+                let window = global_window_event.window().clone();
+                std::thread::spawn(move || {
+                    std::thread::sleep(std::time::Duration::from_millis(100));
+                    window.close().unwrap();
+                });
+            }
+        })
         .invoke_handler(generate_handler![
             commands::config::config_load,
             commands::config::config_save,

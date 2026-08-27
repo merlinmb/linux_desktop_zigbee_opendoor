@@ -95,7 +95,11 @@ function App() {
 
   return (
     <div className="app">
-      <StatusBar mqttConnected={mqtt.connected} broker={config.mqtt.broker} />
+      <StatusBar
+        mqttConnected={mqtt.connected}
+        broker={config.mqtt.broker}
+        onOpenSettings={() => setShowSettings(true)}
+      />
 
       <div className="main-content" data-tauri-drag-region>
         {hasOpenContacts ? (
@@ -108,12 +112,6 @@ function App() {
         ) : (
           <Clock fontSize={config.display.clock_font_size} />
         )}
-      </div>
-
-      <div className="toolbar" data-tauri-drag-region>
-        <button className="btn-settings" onClick={() => setShowSettings(true)} title="Settings (Ctrl+,)">
-          ⚙️
-        </button>
       </div>
 
       {showSettings && config && (
