@@ -8,13 +8,25 @@ pub async fn mqtt_connect(
     broker: String,
     port: u16,
     client_name: String,
+    username: Option<String>,
+    password: Option<String>,
     state: tauri::State<'_, Arc<RwLock<AppState>>>,
 ) -> Result<String, String> {
     let state_handle = state.inner().clone();
     let mut app_state = state.write().await;
 
     let mut manager = MqttManager::new();
-    match manager.connect(broker.clone(), port, client_name.clone(), state_handle).await {
+    match manager
+        .connect(
+            broker.clone(),
+            port,
+            client_name.clone(),
+            username,
+            password,
+            state_handle,
+        )
+        .await
+    {
         Ok(_client) => {
             app_state.mqtt_status.broker = broker.clone();
             app_state.mqtt_status.client_name = client_name.clone();

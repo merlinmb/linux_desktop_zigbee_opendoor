@@ -65,7 +65,10 @@ export const ContactsList: React.FC<ContactsListProps> = ({
 
       <div className="contacts-items">
         {current && (
-          <div className={`contact-item ${isHighlighted ? 'highlighted' : ''}`}>
+          <div
+            className={`contact-item ${isHighlighted ? 'highlighted' : ''}`}
+            style={isHighlighted ? { '--highlight-duration': `${highlightDurationMs}ms` } as React.CSSProperties : undefined}
+          >
             <span className="contact-name" style={{ fontSize: `${contactNameFontSize}px` }}>
               {current.friendly_name}
             </span>

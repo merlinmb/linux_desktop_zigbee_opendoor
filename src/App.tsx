@@ -20,6 +20,8 @@ function App() {
     config?.mqtt.broker || 'localhost',
     config?.mqtt.port || 1883,
     config?.mqtt.client_name || 'opendoor_monitor',
+    config?.mqtt.username,
+    config?.mqtt.password,
   )
 
   // Auto-connect to MQTT when config is loaded

@@ -8,14 +8,37 @@ pub struct MqttConfig {
     pub broker: String,
     pub port: u16,
     pub client_name: String,
+    #[serde(default)]
+    pub username: Option<String>,
+    #[serde(default)]
+    pub password: Option<String>,
 }
 
 impl Default for MqttConfig {
     fn default() -> Self {
+        let hostname = hostname::get()
+            .ok()
+            .and_then(|h| h.into_string().ok())
+            .unwrap_or_else(|| "unknown".to_string());
+
+        let client_name = if hostname.len() <= 8 {
+            format!("door_{}", hostname)
+        } else {
+            use std::collections::hash_map::DefaultHasher;
+            use std::hash::{Hash, Hasher};
+
+            let mut hasher = DefaultHasher::new();
+            hostname.hash(&mut hasher);
+            let hash = hasher.finish();
+            format!("door_{:x}", hash & 0xffffff)
+        };
+
         MqttConfig {
             broker: "192.168.1.1".to_string(),
             port: 1883,
-            client_name: "opendoor_monitor_linux".to_string(),
+            client_name,
+            username: None,
+            password: None,
         }
     }
 }

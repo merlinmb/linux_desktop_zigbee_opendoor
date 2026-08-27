@@ -61,11 +61,11 @@ scp "$PKG" "$TARGET:$REMOTE_TMP"
 
 if $USE_APPIMAGE; then
   echo "==> Installing AppImage on $TARGET (~/Applications)"
-  ssh -t "$TARGET" "mkdir -p ~/Applications && mv '$REMOTE_TMP' ~/Applications/ && chmod +x ~/Applications/$PKG_NAME"
+  ssh -t "$TARGET" "mkdir -p ~/Applications && mv '$REMOTE_TMP' ~/Applications/ && chmod +x ~/Applications/$PKG_NAME && pkill -f opendoor-monitor || true"
   LAUNCH_HINT="~/Applications/$PKG_NAME"
 else
   echo "==> Installing .deb on $TARGET (sudo apt install)"
-  ssh -t "$TARGET" "sudo apt-get install -y '$REMOTE_TMP' && rm -f '$REMOTE_TMP'"
+  ssh -t "$TARGET" "sudo apt-get install -y '$REMOTE_TMP' && rm -f '$REMOTE_TMP' && pkill -f opendoor-monitor || true"
   LAUNCH_HINT="opendoor-monitor (or from the applications menu)"
 fi
 

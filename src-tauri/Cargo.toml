@@ -1,6 +1,6 @@
 [package]
 name = "opendoor-monitor"
-version = "1.0.0"
+version = "1.0.5"
 edition = "2021"
 authors = ["merlinmb <markbeets@gmail.com>"]
 
@@ -26,6 +26,7 @@ tauri = { version = "1.5", features = ["window-start-dragging"] }
 tauri-plugin-single-instance = { version = "0.0", git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 toml = "0.8"
 directories = "5.0"
+hostname = "0.3"
 
 [profile.release]
 opt-level = "z"

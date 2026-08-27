@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { mqttConnect, mqttDisconnect } from '../lib/api'
 
-export function useMqtt(broker: string, port: number, clientName: string) {
+export function useMqtt(broker: string, port: number, clientName: string, username?: string, password?: string) {
   const [connected, setConnected] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -9,7 +9,7 @@ export function useMqtt(broker: string, port: number, clientName: string) {
   const connect = async () => {
     setConnecting(true)
     try {
-      await mqttConnect(broker, port, clientName)
+      await mqttConnect(broker, port, clientName, username, password)
       setConnected(true)
       setError(null)
     } catch (err) {

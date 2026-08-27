@@ -13,8 +13,10 @@ export async function mqttConnect(
   broker: string,
   port: number,
   clientName: string,
+  username?: string,
+  password?: string,
 ): Promise<string> {
-  return invoke('mqtt_connect', { broker, port, clientName })
+  return invoke('mqtt_connect', { broker, port, clientName, username, password })
 }
 
 export async function mqttDisconnect(): Promise<void> {

@@ -11,6 +11,8 @@ export interface MqttConfig {
   broker: string
   port: number
   client_name: string
+  username?: string
+  password?: string
 }
 
 export interface DisplayConfig {

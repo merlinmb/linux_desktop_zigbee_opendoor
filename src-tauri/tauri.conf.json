@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "package": {
     "productName": "Open Door Monitor",
-    "version": "1.0.0"
+    "version": "1.0.5"
   },
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -44,7 +44,7 @@
         "label": "dock",
         "title": "Open Door Monitor",
         "width": 400,
-        "height": 128,
+        "height": 200,
         "x": 0,
         "y": 0,
         "resizable": false,
@@ -54,9 +54,9 @@
         "alwaysOnTop": true,
         "skipTaskbar": true,
         "minWidth": 400,
-        "minHeight": 128,
+        "minHeight": 200,
         "maxWidth": 400,
-        "maxHeight": 128,
+        "maxHeight": 200,
         "focus": true,
         "visible": true
       }

@@ -79,6 +79,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ config, onSave, on
               })
             }
           />
+          <input
+            type="text"
+            placeholder="Username (optional)"
+            value={localConfig.mqtt.username || ''}
+            onChange={(e) =>
+              setLocalConfig({
+                ...localConfig,
+                mqtt: { ...localConfig.mqtt, username: e.target.value || undefined },
+              })
+            }
+          />
+          <input
+            type="password"
+            placeholder="Password (optional)"
+            value={localConfig.mqtt.password || ''}
+            onChange={(e) =>
+              setLocalConfig({
+                ...localConfig,
+                mqtt: { ...localConfig.mqtt, password: e.target.value || undefined },
+              })
+            }
+          />
         </div>
 
         <div className="settings-section">
