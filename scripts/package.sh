@@ -17,8 +17,12 @@ echo "==> Building app (frontend + Tauri bundles)"
 npm run tauri:build
 
 BUNDLE_DIR="src-tauri/target/release/bundle"
-DEB_SRC=$(find "$BUNDLE_DIR/deb" -name '*.deb' 2>/dev/null | head -n1 || true)
-APPIMAGE_SRC=$(find "$BUNDLE_DIR/appimage" -name '*.AppImage' 2>/dev/null | head -n1 || true)
+# Tauri never cleans out old versioned bundles from previous builds, so
+# `bundle/deb` and `bundle/appimage` can contain a .deb/.AppImage for every
+# version ever built here. `find` doesn't return them in any useful order,
+# so pick by mtime to make sure we grab what was just built, not a stale one.
+DEB_SRC=$(find "$BUNDLE_DIR/deb" -name '*.deb' -printf '%T@ %p\n' 2>/dev/null | sort -rn | head -n1 | cut -d' ' -f2- || true)
+APPIMAGE_SRC=$(find "$BUNDLE_DIR/appimage" -name '*.AppImage' -printf '%T@ %p\n' 2>/dev/null | sort -rn | head -n1 | cut -d' ' -f2- || true)
 
 if [[ -z "$DEB_SRC" && -z "$APPIMAGE_SRC" ]]; then
   echo "error: no .deb or .AppImage produced under $BUNDLE_DIR" >&2
