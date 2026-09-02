@@ -116,6 +116,7 @@ async fn main() {
             commands::config::config_save,
             commands::mqtt::mqtt_connect,
             commands::mqtt::mqtt_disconnect,
+            commands::mqtt::mqtt_status,
             commands::mqtt::mqtt_subscribe,
             commands::mqtt::mqtt_unsubscribe,
             commands::contacts::contacts_get_all,

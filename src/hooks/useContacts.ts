@@ -1,18 +1,15 @@
 import { useEffect, useState, useCallback } from 'react'
-import { contactsGetAll, contactsCountOpen } from '../lib/api'
+import { contactsGetAll } from '../lib/api'
 
 export function useContacts() {
   const [contacts, setContacts] = useState<any[]>([])
-  const [openCount, setOpenCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchContacts = useCallback(async () => {
     try {
       const all = await contactsGetAll()
-      const open = await contactsCountOpen()
       setContacts(all)
-      setOpenCount(open)
       setError(null)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
@@ -28,6 +25,8 @@ export function useContacts() {
     const interval = setInterval(fetchContacts, 1000)
     return () => clearInterval(interval)
   }, [fetchContacts])
+
+  const openCount = contacts.filter((c) => !c.contact).length
 
   return { contacts, openCount, loading, error, refetch: fetchContacts }
 }

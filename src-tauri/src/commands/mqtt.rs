@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use crate::state::{AppState, ContactStatus};
+use crate::state::{AppState, ContactStatus, MqttStatus};
 use crate::mqtt::MqttManager;
 
 #[tauri::command]
@@ -59,6 +59,14 @@ pub async fn mqtt_disconnect(
     app_state.mqtt_status.connected = false;
     tracing::info!("MQTT disconnected");
     Ok(())
+}
+
+#[tauri::command]
+pub async fn mqtt_status(
+    state: tauri::State<'_, Arc<RwLock<AppState>>>,
+) -> Result<MqttStatus, String> {
+    let app_state = state.read().await;
+    Ok(app_state.mqtt_status.clone())
 }
 
 #[tauri::command]

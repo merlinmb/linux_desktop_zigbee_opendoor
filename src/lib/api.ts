@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/tauri'
-import { AppConfig, ContactStatus } from './types'
+import { AppConfig, ContactStatus, MqttStatus } from './types'
 
 export async function configLoad(): Promise<AppConfig> {
   return invoke('config_load')
@@ -21,6 +21,10 @@ export async function mqttConnect(
 
 export async function mqttDisconnect(): Promise<void> {
   return invoke('mqtt_disconnect')
+}
+
+export async function mqttStatus(): Promise<MqttStatus> {
+  return invoke('mqtt_status')
 }
 
 export async function mqttSubscribe(topic: string, friendlyName: string): Promise<void> {
