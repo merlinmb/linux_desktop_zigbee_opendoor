@@ -1,6 +1,6 @@
 {
   "name": "opendoor-monitor",
-  "version": "1.0.16",
+  "version": "1.0.18",
   "description": "Linux Mint Zigbee door/window sensor monitor overlay",
   "type": "module",
   "scripts": {
