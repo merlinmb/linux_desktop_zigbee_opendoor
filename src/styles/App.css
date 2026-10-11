@@ -375,10 +375,6 @@ body {
   gap: 12px;
   margin-top: 20px;
   justify-content: flex-end;
-  position: sticky;
-  bottom: -20px;
-  padding: 10px 0;
-  background-color: var(--surface);
 }
 
 .btn-save,
@@ -410,8 +406,6 @@ body {
 }
 
 .app-version {
-  margin-right: auto;
-  align-self: center;
   font-size: 11px;
   color: var(--dim);
 }

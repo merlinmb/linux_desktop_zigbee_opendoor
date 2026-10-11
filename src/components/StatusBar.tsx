@@ -28,6 +28,9 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mqttConnected, broker, onO
         <span className="time" data-tauri-drag-region>
           {time.toLocaleTimeString()}
         </span>
+        <span className="app-version" data-tauri-drag-region>
+          v{__APP_VERSION__}
+        </span>
       </div>
       <div className="status-right">
         <button className="btn-settings" onClick={onOpenSettings} title="Settings (Ctrl+,)">
