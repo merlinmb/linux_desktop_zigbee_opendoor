@@ -12,11 +12,13 @@ param(
     [string]$RepoPath = '~/linux_desktop_zigbee_opendoor',
     [string]$InstallPath = '~/opendoor-monitor.AppImage',
     [string]$Branch = 'main',
+    [string]$RepoUrl,     # defaults to this repo's origin; used to clone if RepoPath is missing
     [switch]$SkipBuild   # just restart the already-installed AppImage
 )
 
 $ErrorActionPreference = 'Stop'
 $target = "$User@$HostName"
+if (-not $RepoUrl) { $RepoUrl = (git -C (Split-Path $PSScriptRoot -Parent) remote get-url origin).Trim() }
 
 # The remote builds from git, so make sure what you want deployed is pushed.
 Push-Location (Split-Path $PSScriptRoot -Parent)
@@ -30,6 +32,10 @@ try {
 } finally { Pop-Location }
 
 $build = if ($SkipBuild) { '' } else { @"
+if [ ! -d $RepoPath/.git ]; then
+  echo "Cloning $RepoUrl -> $RepoPath"
+  git clone $RepoUrl $RepoPath
+fi
 cd $RepoPath
 git fetch origin
 git checkout $Branch

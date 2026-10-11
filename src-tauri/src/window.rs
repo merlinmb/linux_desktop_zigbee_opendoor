@@ -4,11 +4,11 @@ use tauri::Window;
 pub fn set_x11_hints(window: &Window) -> Result<(), Box<dyn std::error::Error>> {
     use std::process::Command;
 
-    let window_id = window.hwnd()? as u32;
+    let title = window.title()?;
 
     // Use wmctrl to set window type to dock (always-on-top panel)
     let output = Command::new("wmctrl")
-        .args(&["-i", "-r", &format!("0x{:x}", window_id), "-b", "add,sticky,above"])
+        .args(&["-r", &title, "-b", "add,sticky,above"])
         .output();
 
     match output {

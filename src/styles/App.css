@@ -33,6 +33,7 @@ body {
   height: 100%;
   background-color: var(--bg);
   padding: 0;
+  position: relative;
 }
 
 .app.loading {
@@ -67,7 +68,7 @@ body {
   padding: 0 8px;
   border-bottom: 1px solid var(--surface);
   font-size: 11px;
-  background-color: rgba(27, 32, 38, 0.95);
+  background-color: var(--surface);
 }
 
 .status-left,
@@ -109,12 +110,14 @@ body {
   background-color: var(--bg);
 }
 
-/* RoboEyes */
-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  image-rendering: pixelated;
+/* Clock */
+.clock {
+  font-size: 156px;
+  line-height: 1;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+  color: var(--text);
 }
 
 /* Contacts List */
@@ -147,43 +150,63 @@ canvas {
 
 .contacts-items {
   flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 30px;
+  overflow: hidden;
 }
 
 .contact-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   text-align: center;
-  padding: 0 8px;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  /* Reserve the highlight border's space up front (transparent when idle) so
+     turning it red on highlight never changes box size and can't get clipped
+     by the parent's overflow. */
+  border: 4px solid transparent;
+  border-radius: 4px;
+}
+
+.contact-item.highlighted {
+  animation: highlight-fade var(--highlight-duration, 3s) ease-out;
+  border-color: #e74c3c;
+}
+
+@keyframes highlight-fade {
+  0% {
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.8), inset 0 0 20px rgba(231, 76, 60, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.4), inset 0 0 20px rgba(231, 76, 60, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(231, 76, 60, 0), inset 0 0 0px rgba(231, 76, 60, 0);
+  }
 }
 
 .contact-name {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 24px;
   color: var(--text);
   word-break: break-word;
 }
 
 .last-seen {
+  flex: none;
   font-size: 10px;
   color: var(--dim);
-}
-
-/* Toolbar */
-.toolbar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 24px;
-  padding: 0 4px;
-  border-top: 1px solid var(--surface);
-  background-color: rgba(27, 32, 38, 0.95);
-  gap: 4px;
 }
 
 .btn-settings {
@@ -191,8 +214,9 @@ canvas {
   border: none;
   color: var(--accent);
   cursor: pointer;
-  font-size: 14px;
-  padding: 4px;
+  font-size: 11px;
+  line-height: 1;
+  padding: 2px 4px;
   border-radius: 2px;
   transition: background-color 0.2s;
 }

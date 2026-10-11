@@ -8,14 +8,40 @@ pub struct MqttConfig {
     pub broker: String,
     pub port: u16,
     pub client_name: String,
+    #[serde(default)]
+    pub username: Option<String>,
+    #[serde(default)]
+    pub password: Option<String>,
 }
 
 impl Default for MqttConfig {
     fn default() -> Self {
+        let hostname = hostname::get()
+            .ok()
+            .and_then(|h| h.into_string().ok())
+            .unwrap_or_else(|| "unknown".to_string());
+
+        use uuid::Uuid;
+        let random_suffix = Uuid::new_v4().to_string()[0..8].to_string();
+
+        let client_name = if hostname.len() <= 8 {
+            format!("door_{}__{}", hostname, random_suffix)
+        } else {
+            use std::collections::hash_map::DefaultHasher;
+            use std::hash::{Hash, Hasher};
+
+            let mut hasher = DefaultHasher::new();
+            hostname.hash(&mut hasher);
+            let hash = hasher.finish();
+            format!("door_{:x}__{}", hash & 0xffffff, random_suffix)
+        };
+
         MqttConfig {
             broker: "192.168.1.1".to_string(),
             port: 1883,
-            client_name: "opendoor_monitor_linux".to_string(),
+            client_name,
+            username: None,
+            password: None,
         }
     }
 }
@@ -25,6 +51,24 @@ pub struct DisplayConfig {
     pub brightness: u8,
     pub flip_screen: bool,
     pub scroll_interval_ms: u32,
+    #[serde(default = "default_clock_font_size")]
+    pub clock_font_size: u16,
+    #[serde(default = "default_contact_name_font_size")]
+    pub contact_name_font_size: u16,
+    #[serde(default = "default_highlight_duration_ms")]
+    pub highlight_duration_ms: u32,
+}
+
+fn default_clock_font_size() -> u16 {
+    156
+}
+
+fn default_contact_name_font_size() -> u16 {
+    72
+}
+
+fn default_highlight_duration_ms() -> u32 {
+    3000
 }
 
 impl Default for DisplayConfig {
@@ -33,6 +77,9 @@ impl Default for DisplayConfig {
             brightness: 100,
             flip_screen: false,
             scroll_interval_ms: 1750,
+            clock_font_size: 156,
+            contact_name_font_size: 72,
+            highlight_duration_ms: 3000,
         }
     }
 }
@@ -98,15 +145,21 @@ pub fn init_config_dir() -> Result<(), Box<dyn std::error::Error>> {
 pub fn load_config() -> Result<AppConfig, Box<dyn std::error::Error>> {
     let config_path = get_config_path()?;
 
-    if config_path.exists() {
+    let mut config: AppConfig = if config_path.exists() {
         let content = fs::read_to_string(&config_path)?;
-        let config: AppConfig = toml::from_str(&content)?;
-        Ok(config)
+        toml::from_str(&content)?
     } else {
         let default_config = AppConfig::default();
         save_config(&default_config)?;
-        Ok(default_config)
-    }
+        return Ok(default_config);
+    };
+
+    // Always append random suffix to ensure unique client_name
+    use uuid::Uuid;
+    let random_suffix = Uuid::new_v4().to_string()[0..8].to_string();
+    config.mqtt.client_name = format!("{}_{}", config.mqtt.client_name, random_suffix);
+
+    Ok(config)
 }
 
 pub fn save_config(config: &AppConfig) -> Result<(), Box<dyn std::error::Error>> {

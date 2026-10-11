@@ -23,7 +23,6 @@ pub struct AppState {
     pub contacts: HashMap<String, ContactStatus>,
     pub mqtt_status: MqttStatus,
     pub mqtt_manager: Option<MqttManager>,
-    pub config_loaded: bool,
 }
 
 impl Default for AppState {
@@ -36,7 +35,6 @@ impl Default for AppState {
                 client_name: String::new(),
             },
             mqtt_manager: None,
-            config_loaded: false,
         }
     }
 }
@@ -44,13 +42,5 @@ impl Default for AppState {
 impl AppState {
     pub fn count_open(&self) -> usize {
         self.contacts.values().filter(|c| !c.contact).count()
-    }
-
-    pub fn get_open_contacts(&self) -> Vec<ContactStatus> {
-        self.contacts
-            .values()
-            .filter(|c| !c.contact)
-            .cloned()
-            .collect()
     }
 }

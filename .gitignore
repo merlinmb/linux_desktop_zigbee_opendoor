@@ -13,3 +13,4 @@ src-tauri/target/
 .idea/
 *.iml
 config.toml
+release/
