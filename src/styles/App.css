@@ -404,3 +404,10 @@ body {
 .btn-cancel:hover {
   opacity: 0.8;
 }
+
+.app-version {
+  margin-right: auto;
+  align-self: center;
+  font-size: 11px;
+  color: var(--dim);
+}

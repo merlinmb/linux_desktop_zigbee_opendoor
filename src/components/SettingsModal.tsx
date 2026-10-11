@@ -228,6 +228,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ config, onSave, on
         </div>
 
         <div className="settings-actions">
+          <span className="app-version">v{__APP_VERSION__}</span>
           <button onClick={handleSave} className="btn-save">
             Save
           </button>
