@@ -13,12 +13,29 @@ param(
     [string]$InstallPath = '~/opendoor-monitor.AppImage',
     [string]$Branch = 'main',
     [string]$RepoUrl,     # defaults to this repo's origin; used to clone if RepoPath is missing
-    [switch]$SkipBuild   # just restart the already-installed AppImage
+    [switch]$SkipBuild,  # just restart the already-installed AppImage
+    [switch]$Setup       # one-time: install Node 20, Rust and Tauri system libs on the target, then exit
 )
 
 $ErrorActionPreference = 'Stop'
 $target = "$User@$HostName"
 if (-not $RepoUrl) { $RepoUrl = (git -C (Split-Path $PSScriptRoot -Parent) remote get-url origin).Trim() }
+
+if ($Setup) {
+    # Needs a TTY for the sudo password, so the commands go on the ssh command line (not stdin).
+    $setupCmd = @(
+        'sudo apt-get update'
+        'sudo apt-get install -y build-essential curl wget file git libssl-dev libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev libx11-dev'
+        'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -'
+        'sudo apt-get install -y nodejs'
+        'curl --proto =https --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
+    ) -join ' && '
+    Write-Host "Installing build prerequisites on $target (will prompt for sudo password) ..." -ForegroundColor Cyan
+    ssh -t $target $setupCmd
+    if ($LASTEXITCODE -ne 0) { throw "Setup failed (exit $LASTEXITCODE)" }
+    Write-Host 'Setup done. Re-run without -Setup to build and deploy.' -ForegroundColor Green
+    exit 0
+}
 
 # The remote builds from git, so make sure what you want deployed is pushed.
 Push-Location (Split-Path $PSScriptRoot -Parent)
@@ -32,6 +49,9 @@ try {
 } finally { Pop-Location }
 
 $build = if ($SkipBuild) { '' } else { @"
+for c in git node npm cargo; do
+  command -v `$c >/dev/null || { echo "Missing '`$c' on target. Run: .\scripts\deploy.ps1 -User $User -Setup" >&2; exit 127; }
+done
 if [ ! -d $RepoPath/.git ]; then
   echo "Cloning $RepoUrl -> $RepoPath"
   git clone $RepoUrl $RepoPath
