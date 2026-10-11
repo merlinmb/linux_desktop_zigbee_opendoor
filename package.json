@@ -1,6 +1,6 @@
 {
   "name": "opendoor-monitor",
-  "version": "1.0.18",
+  "version": "1.0.20",
   "description": "Linux Mint Zigbee door/window sensor monitor overlay",
   "type": "module",
   "scripts": {
@@ -12,6 +12,7 @@
     "tauri:build": "tauri build",
     "package": "bash scripts/package.sh",
     "deploy": "bash scripts/deploy.sh",
+    "deploy:flight": "bash scripts/deploy-flight.sh",
     "bump:patch": "bash scripts/bump-version.sh patch",
     "bump:minor": "bash scripts/bump-version.sh minor",
     "bump:major": "bash scripts/bump-version.sh major"

@@ -1,6 +1,6 @@
 [package]
 name = "opendoor-monitor"
-version = "1.0.18"
+version = "1.0.20"
 edition = "2021"
 authors = ["merlinmb <markbeets@gmail.com>"]
 
