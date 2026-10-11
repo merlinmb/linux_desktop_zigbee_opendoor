@@ -375,6 +375,10 @@ body {
   gap: 12px;
   margin-top: 20px;
   justify-content: flex-end;
+  position: sticky;
+  bottom: -20px;
+  padding: 10px 0;
+  background-color: var(--surface);
 }
 
 .btn-save,
