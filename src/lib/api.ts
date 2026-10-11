@@ -36,3 +36,7 @@ export async function contactsGetAll(): Promise<ContactStatus[]> {
 export async function contactsCountOpen(): Promise<number> {
   return invoke('contacts_count_open')
 }
+
+export async function appExit(): Promise<void> {
+  return invoke('app_exit')
+}

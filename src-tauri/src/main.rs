@@ -54,6 +54,7 @@ async fn main() {
         .invoke_handler(generate_handler![
             commands::config::config_load,
             commands::config::config_save,
+            commands::config::app_exit,
             commands::mqtt::mqtt_connect,
             commands::mqtt::mqtt_disconnect,
             commands::mqtt::mqtt_subscribe,

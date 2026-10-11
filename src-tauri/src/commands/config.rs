@@ -11,3 +11,8 @@ pub async fn config_save(new_config: AppConfig) -> Result<(), String> {
     config::save_config(&new_config)
         .map_err(|e| format!("Failed to save config: {}", e))
 }
+
+#[tauri::command]
+pub fn app_exit(app: tauri::AppHandle) {
+    app.exit(0);
+}

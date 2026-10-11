@@ -201,6 +201,11 @@ canvas {
   background-color: var(--surface);
 }
 
+.btn-close:hover {
+  background-color: #c0392b;
+  color: #fff;
+}
+
 /* Settings Modal */
 .settings-modal-overlay {
   position: fixed;

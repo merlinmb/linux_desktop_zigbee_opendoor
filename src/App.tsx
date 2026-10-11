@@ -4,6 +4,7 @@ import { ContactsList } from './components/ContactsList'
 import { StatusBar } from './components/StatusBar'
 import { SettingsModal } from './components/SettingsModal'
 import { AppConfig } from './lib/types'
+import { appExit } from './lib/api'
 import { useConfig } from './hooks/useConfig'
 import { useContacts } from './hooks/useContacts'
 import { useMqtt } from './hooks/useMqtt'
@@ -73,6 +74,9 @@ function App() {
       <div className="toolbar">
         <button className="btn-settings" onClick={() => setShowSettings(true)} title="Settings (Ctrl+,)">
           ⚙️
+        </button>
+        <button className="btn-settings btn-close" onClick={() => appExit()} title="Exit">
+          ✕
         </button>
       </div>
 
